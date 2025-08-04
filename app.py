@@ -76,8 +76,18 @@ def predict_with_gemini(image_path):
     print("[INFO] Gemini'ye sorgu gönderiliyor...")
     try:
         img = Image.open(image_path)
-        prompt = "What is the name of the food in this image? Be specific and respond with only the food's name. For example: 'Caesar Salad' or 'French Fries'."
-
+        prompt = """
+            Bu resimdeki yiyeceği analiz et. 
+            1. Yiyeceğin adını belirle.
+            2. Bu yiyeceğin standart 100 gramlık porsiyonu için tahmini besin değerlerini hesapla.
+            Cevabını, başka hiçbir açıklama veya metin eklemeden, SADECE aşağıdaki gibi bir JSON formatında ver:
+            {
+              "food_name": "Yemeğin Adı",
+              "calories": <kalori_değeri_tamsayı>,
+              "protein": <protein_gramı_ondalıklı>,
+              "fat": <yağ_gramı_ondalıklı>
+            }
+            """
         response = gemini_model.generate_content([prompt, img])
         gemini_result = response.text.strip().replace("*", "")
         print(f"[INFO] Gemini Sonucu: {gemini_result}")
